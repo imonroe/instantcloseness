@@ -51,25 +51,39 @@
 
   $(document).on("pageinit", function(event){
 
-    console.log('entered pageinit');
-    console.log('counter = '+current_question_counter);
     $("#question_content").html("<p>"+questions[current_question_counter]+"</p>");
+    if (flip_a_coin()){
+      $("#question_content").append("<p>"+player1_name+" goes first.</p>");
+    }else{
+      $("#question_content").append("<p>"+player2_name+" goes first.</p>");
+    }
 
     $("#question_number").html("Question "+question_label);
 
     $("#next_button").on("vclick", function(e){
       e.preventDefault();
       e.stopImmediatePropagation();
-      console.log('entered nextbutton');
       current_question_counter++;
       question_label = current_question_counter+1;
-      console.log('counter = '+current_question_counter);
       if (current_question_counter < 36){
         $("#question_content").html("<p>"+questions[current_question_counter]+"</p>");
         $("#question_number").html("Question "+question_label);
+        if (flip_a_coin()){
+          $("#question_content").append("<p>"+player1_name+" goes first.</p>");
+        }else{
+          $("#question_content").append("<p>"+player2_name+" goes first.</p>");
+        }
       } else {
         $( ":mobile-pagecontainer" ).pagecontainer( "change", $("#timer_screen"));
       }
+    });
+
+    $("#names_submit").on("vclick", function(e){
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      player1_name = $("#player1").val();
+      player2_name = $("#player2").val();
+      $( ":mobile-pagecontainer" ).pagecontainer( "change", $("#question_screen"));
     });
 
     $("#timer_button").on("vclick", function(e){
@@ -77,127 +91,162 @@
       e.stopImmediatePropagation();
       var time_left = 240;
       var countdown_str = "<center><h1>"+time_left.toString()+"<h1></center>";
-        $("#timer_button").remove();
-        $("#countdown").html(countdown_str);
+      $("#timer_button").remove();
+      $("#countdown").html(countdown_str);
 
-        var my_timer = setInterval(function(){ update_timer(); }, 1000);
+      var my_timer = setInterval(function(){ update_timer(); }, 1000);
 
-        function update_timer(){
-          time_left--;
-          console.log('tick');
-          countdown_str = "<center><h1>"+time_left.toString()+"<h1></center>";
-            if (time_left >= 0){
-              $("#countdown").html(countdown_str);
-            } else {
-              document.getElementById("sound1").play();
-              $("#countdown").html("<center><h1>Time's Up!</h1></center>");
-              clearInterval(my_timer);
-              $("#countdown").append('<center><p>Thanks for playing.  If you enjoyed this exercise, drop me an email and tell me about it: <a href="mailto:ian@ianmonroe.com">ian@ianmonroe.com</a></p></center>');
-              $("#countdown").append('<p></p><center><p><a href="https://github.com/imonroe/instantcloseness">Fork this project on Github</a></p></center>');
-            }
-          }
+      function update_timer(){
+        time_left--;
+        countdown_str = "<center><h1>"+time_left.toString()+"<h1></center>";
+        if (time_left >= 0){
+          $("#countdown").html(countdown_str);
+        } else {
+          document.getElementById("sound1").play();
+          $("#countdown").html("<center><h1>Time's Up!</h1></center>");
+          clearInterval(my_timer);
+          $("#countdown").append('<center><p>Thanks for playing.  If you enjoyed this exercise, drop me an email and tell me about it: <a href="mailto:ian@ianmonroe.com">ian@ianmonroe.com</a></p></center>');
+          $("#countdown").append('<p></p><center><p><a href="https://github.com/imonroe/instantcloseness">Fork this project on Github</a></p></center>');
+        }
+      }
+    });
 
-        });
+    function flip_a_coin(){
+      //simple coin flip
+      var outcome;
+      var randomnumber=Math.floor(Math.random()*9);
+      if (randomnumber < 5){
+        outcome = false;
+      } else {
+        outcome = true;
+      }
+      return outcome;
+    }
 
-      });
-    </script>
-  </head>
+  });
+  </script>
+</head>
 
-  <body>
+<body>
 
-
-    <div data-role="page" id="home_screen">
-      <div data-role="header" data-add-back-btn="true">
-        <h1>Instant Closeness</h1>
-        <a href="#about_screen" class="ui-btn-right ui-btn ui-btn-inline ui-mini ui-corner-all">About this software</a>
-      </div>
-
-      <div role="main" class="ui-content">
-        <p>This program is designed to implement the technique described by Arthur Aron, et. al., in their paper entitled "The Experimental Generation of Interpersonal Closeness: A Procedure and Some Preliminary Findings (<a href="http://www.stafforini.com/txt/Aron%20et%20al%20-%20The%20experimental%20generation%20of%20interpersonal%20closeness.pdf" target="_blank">pdf available here</a>).</p>
-        <p>It is designed to induce feelings of interpersonal closeness between strangers.</p>
-
-        <p>From the study: "One key pattern associated with the development of a close relationship among peers is sustained, escalating, reciprocal, personalistic self-disclosure."</p>
-
-        <p>The following instructions are drawn from the study, and slightly modified for this program.</p>
-
-        <h3>INSTRUCTIONS (Please both read carefully before continuing)</h3>
-
-        <p>This is an exercise in interpersonal closeness, and your task, which we think will be quite enjoyable, is simply to get close to your partner. We believe that the best way for you to get close to your partner is for you to share with them and for them to share with you. Of course, when we advise you about getting close to your partner, we are giving advice regarding your behavior in this demonstration only, we are not advising you about your behavior outside of this demonstration. In order to help you get close, the two of you are to engage in a kind of sharing game.</p>
-
-        <p>Following these instructions are a set of 37 questions or tasks to perform. As soon as you both finish reading these instructions, you may begin to go through them. One of you should read aloud the question or task and then BOTH do what it asks.  The program will randomly select which of you are to go first. When you are both done, go on to the next question--one of you reading it aloud and both doing what it asks. And so forth.</p>
-
-        <p>As you go through the questions, one at a time, please don't skip any -- do each in order. If it asks you a question, share your answer with your partner. Then let him or her share their answer to the same question with you. If it is a task, do it first, then let your partner do it. Take plenty of time with each slip, doing what it asks thoroughly and thoughtfully.</p>
-
-        <p><a href="#question_screen" class="ui-btn ui-corner-all">Click here to begin.</a></p>
-      </div>
-
-      <div data-role="footer" data-position="fixed">
-        <h3> Copyright 2015 Ian Monroe</h3>
-        <h6><a href="http://www.ianmonroe.com" target="_blank">http://www.ianmonroe.com</a></h6>
-      </div>
+  <div data-role="page" id="home_screen">
+    <div data-role="header" data-add-back-btn="true">
+      <h1>Instant Closeness</h1>
+      <a href="#about_screen" class="ui-btn-right ui-btn ui-btn-inline ui-mini ui-corner-all">About this software</a>
     </div>
 
-    <div data-role="page" id="question_screen">
-      <div data-role="header" data-add-back-btn="true">
-        <h1 id="question_number">Question </h1>
-      </div>
+    <div role="main" class="ui-content">
+      <p>This program is designed to implement the technique described by Arthur Aron, et. al., in their paper entitled "The Experimental Generation of Interpersonal Closeness: A Procedure and Some Preliminary Findings (<a href="http://www.stafforini.com/txt/Aron%20et%20al%20-%20The%20experimental%20generation%20of%20interpersonal%20closeness.pdf" target="_blank">pdf available here</a>).</p>
+      <p>It is designed to induce feelings of interpersonal closeness between strangers.</p>
 
-      <div role="main" class="ui-content">
-        <div id="question_content"></div>
-        <button class="ui-btn ui-corner-all" id="next_button">Next Item</button>
-      </div>
+      <p>From the study: "One key pattern associated with the development of a close relationship among peers is sustained, escalating, reciprocal, personalistic self-disclosure."</p>
 
-      <div data-role="footer" data-position="fixed">
-        <h3> Copyright 2015 Ian Monroe</h3>
-        <h6><a href="http://www.ianmonroe.com" target="_blank">http://www.ianmonroe.com</a></h6>
-      </div>
+      <p>The following instructions are drawn from the study, and slightly modified for this program.</p>
+
+      <h3>INSTRUCTIONS (Please both read carefully before continuing)</h3>
+
+      <p>This is an exercise in interpersonal closeness, and your task, which we think will be quite enjoyable, is simply to get close to your partner. We believe that the best way for you to get close to your partner is for you to share with them and for them to share with you. Of course, when we advise you about getting close to your partner, we are giving advice regarding your behavior in this demonstration only, we are not advising you about your behavior outside of this demonstration. In order to help you get close, the two of you are to engage in a kind of sharing game.</p>
+
+      <p>Following these instructions are a set of 37 questions or tasks to perform. As soon as you both finish reading these instructions, you may begin to go through them. One of you should read aloud the question or task and then BOTH do what it asks.  The program will randomly select which of you are to go first. When you are both done, go on to the next question--one of you reading it aloud and both doing what it asks. And so forth.</p>
+
+      <p>As you go through the questions, one at a time, please don't skip any -- do each in order. If it asks you a question, share your answer with your partner. Then let him or her share their answer to the same question with you. If it is a task, do it first, then let your partner do it. Take plenty of time with each slip, doing what it asks thoroughly and thoughtfully.</p>
+
+      <p><a href="#names_screen" class="ui-btn ui-corner-all">Click here to begin.</a></p>
     </div>
 
-    <div data-role="page" id="timer_screen">
-      <div data-role="header" data-add-back-btn="true">
-        <h1>Eye Contact Exercise</h1>
-      </div>
+    <div data-role="footer" data-position="fixed">
+      <center><p>By Ian Monroe</p></center>
+      <h6><a href="http://www.ianmonroe.com" target="_blank">http://www.ianmonroe.com</a></h6>
+    </div>
+  </div>
 
-      <div role="main" class="ui-content">
 
-        <p>The final exercise is eye contact.</p>
-        <p>Click the button below to start the timer.  It will count down, until four minutes have passed.  During this time, you and your partner should stare into each other's eyes, without speaking.</p>
-        <p>When the timer expires, the time has ended, and a tone will sound to alert you.</p>
-
-        <div id="countdown"></div>
-
-        <button class="ui-btn ui-corner-all" id="timer_button">Start Timer</button>
-
-      </div>
-
-      <div data-role="footer" data-position="fixed">
-        <h3> Copyright 2015 Ian Monroe</h3>
-        <h6><a href="http://www.ianmonroe.com" target="_blank">http://www.ianmonroe.com</a></h6>
-      </div>
+  <div data-role="page" id="names_screen">
+    <div data-role="header" data-add-back-btn="true">
+      <h1>Who are you</h1>
     </div>
 
-    <div data-role="page" id="about_screen">
-      <div data-role="header" data-add-back-btn="true">
-        <h1>About this program</h1>
-      </div>
+    <div role="main" class="ui-content">
+      <p>First, what are your names?</p>
+      <form>
+        <label for="player1">Player 1</label>
+        <input type="text" name="player1" id="player1" value="">
+        <label for="player1">Player 2</label>
+        <input type="text" name="player2" id="player2" value="">
+        <button class="ui-shadow ui-btn ui-corner-all" id="names_submit">Submit</button>
+      </form>
+    </div>
 
-      <div role="main" class="ui-content">
-        <p>This program is based on the research of Arthur Aron, et.al
-          titled: The Experimental Generation of Interpersonal Closeness: a Procedure and some Preliminary Findings</p>
-          <p>URL: <a href="http://www.stafforini.com/txt/Aron%20et%20al%20-%20The%20experimental%20generation%20of%20interpersonal%20closeness.pdf" target="_blank">http://www.stafforini.com/txt/Aron%20et%20al%20-%20The%20experimental%20generation%20of%20interpersonal%20closeness.pdf</a></p>
-          <p>The inspiration to make this program came from the NYT article entitled <em>To Fall in Love With Anyone, Do This</em>, by Mandy Len Catron, published Jan. 9, 2015<p>
+    <div data-role="footer" data-position="fixed">
+      <center><p>By Ian Monroe</p></center>
+      <h6><a href="http://www.ianmonroe.com" target="_blank">http://www.ianmonroe.com</a></h6>
+    </div>
+  </div>
+
+
+  <div data-role="page" id="question_screen">
+    <div data-role="header" data-add-back-btn="true">
+      <h1 id="question_number">Question </h1>
+    </div>
+
+    <div role="main" class="ui-content">
+      <div id="question_content"></div>
+      <button class="ui-btn ui-corner-all" id="next_button">Next Item</button>
+    </div>
+
+    <div data-role="footer" data-position="fixed">
+      <center><p>By Ian Monroe</p></center>
+      <h6><a href="http://www.ianmonroe.com" target="_blank">http://www.ianmonroe.com</a></h6>
+    </div>
+  </div>
+
+
+  <div data-role="page" id="timer_screen">
+    <div data-role="header" data-add-back-btn="true">
+      <h1>Eye Contact Exercise</h1>
+    </div>
+
+    <div role="main" class="ui-content">
+
+      <p>The final exercise is eye contact.</p>
+      <p>Click the button below to start the timer.  It will count down, until four minutes have passed.  During this time, you and your partner should stare into each other's eyes, without speaking.</p>
+      <p>When the timer expires, the time has ended, and a tone will sound to alert you.</p>
+
+      <div id="countdown"></div>
+
+      <button class="ui-btn ui-corner-all" id="timer_button">Start Timer</button>
+
+    </div>
+
+    <div data-role="footer" data-position="fixed">
+      <center><p>By Ian Monroe</p></center>
+      <h6><a href="http://www.ianmonroe.com" target="_blank">http://www.ianmonroe.com</a></h6>
+    </div>
+  </div>
+
+
+  <div data-role="page" id="about_screen">
+    <div data-role="header" data-add-back-btn="true">
+      <h1>About this program</h1>
+    </div>
+
+    <div role="main" class="ui-content">
+      <p>This program is based on the research of Arthur Aron, et.al
+        titled: The Experimental Generation of Interpersonal Closeness: a Procedure and some Preliminary Findings</p>
+        <p>URL: <a href="http://www.stafforini.com/txt/Aron%20et%20al%20-%20The%20experimental%20generation%20of%20interpersonal%20closeness.pdf" target="_blank">http://www.stafforini.com/txt/Aron%20et%20al%20-%20The%20experimental%20generation%20of%20interpersonal%20closeness.pdf</a></p>
+        <p>The inspiration to make this program came from the NYT article entitled <em>To Fall in Love With Anyone, Do This</em>, by Mandy Len Catron, published Jan. 9, 2015<p>
           <p>You can find that article here: <a href="http://www.nytimes.com/2015/01/11/fashion/modern-love-to-fall-in-love-with-anyone-do-this.html?_r=0" target="_blank">http://www.nytimes.com/2015/01/11/fashion/modern-love-to-fall-in-love-with-anyone-do-this.html?_r=0</a></p>
 
           <p><a href="https://github.com/imonroe/instantcloseness" target="_blank">Fork this project on Github</a></p>
+        </div>
+
+        <div data-role="footer" data-position="fixed">
+          <center><p>By Ian Monroe</p></center>
+          <h6><a href="http://www.ianmonroe.com" target="_blank">http://www.ianmonroe.com</a></h6>
+        </div>
       </div>
 
-      <div data-role="footer" data-position="fixed">
-        <h3> Copyright 2015 Ian Monroe</h3>
-        <h6><a href="http://www.ianmonroe.com" target="_blank">http://www.ianmonroe.com</a></h6>
-      </div>
-    </div>
 
-
-    <audio id="sound1" src="alarm.mp3"></audio>
-  </body>
-  </html>
+      <audio id="sound1" src="alarm.mp3"></audio>
+    </body>
+    </html>
